@@ -87,7 +87,7 @@ export default function Reports() {
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={barData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 13%, 91%)" />
+                <CartesianGrid strokeDasharray="3 3" className="stroke-border" stroke="currentColor" style={{ stroke: 'hsl(var(--border))' }} />
                 <XAxis dataKey="name" tick={{ fontSize: 12 }} />
                 <YAxis tick={{ fontSize: 12 }} tickFormatter={(v) => `R$${(v / 1000).toFixed(0)}k`} />
                 <Tooltip formatter={(v: number) => formatCurrency(v)} />
