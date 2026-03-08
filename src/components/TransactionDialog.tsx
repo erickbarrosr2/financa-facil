@@ -65,7 +65,7 @@ export function TransactionDialog({ open, onOpenChange, editData }: TransactionD
     e.preventDefault();
     const data = {
       type,
-      amount: parseFloat(amount),
+      amount: amountRaw / 100,
       category_id: categoryId || null,
       account_id: accountId,
       date,
