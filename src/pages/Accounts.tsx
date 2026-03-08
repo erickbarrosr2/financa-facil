@@ -25,13 +25,26 @@ export default function Accounts() {
   const [editData, setEditData] = useState<any>(null);
   const [name, setName] = useState("");
   const [type, setType] = useState("checking");
-  const [balance, setBalance] = useState("");
+  const [balanceRaw, setBalanceRaw] = useState(0);
+  const [balanceDisplay, setBalanceDisplay] = useState("");
+
+  const formatInput = (cents: number) =>
+    (cents / 100).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+  const handleBalanceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value.replace(/\D/g, "");
+    const cents = parseInt(raw || "0", 10);
+    setBalanceRaw(cents);
+    setBalanceDisplay(formatInput(cents));
+  };
 
   const openEdit = (acc: any) => {
     setEditData(acc);
     setName(acc.name);
     setType(acc.type);
-    setBalance(String(acc.initial_balance));
+    const cents = Math.round(acc.initial_balance * 100);
+    setBalanceRaw(cents);
+    setBalanceDisplay(formatInput(cents));
     setDialogOpen(true);
   };
 
@@ -39,13 +52,14 @@ export default function Accounts() {
     setEditData(null);
     setName("");
     setType("checking");
-    setBalance("0");
+    setBalanceRaw(0);
+    setBalanceDisplay("0,00");
     setDialogOpen(true);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const data = { name, type, initial_balance: parseFloat(balance) || 0 };
+    const data = { name, type, initial_balance: balanceRaw / 100 };
     if (editData) {
       updateAcc.mutate({ id: editData.id, ...data }, { onSuccess: () => setDialogOpen(false) });
     } else {
@@ -132,7 +146,7 @@ export default function Accounts() {
             </div>
             <div className="space-y-2">
               <Label>Saldo inicial (R$)</Label>
-              <Input type="number" step="0.01" value={balance} onChange={(e) => setBalance(e.target.value)} />
+              <Input type="text" inputMode="numeric" value={balanceDisplay} onChange={handleBalanceChange} placeholder="0,00" />
             </div>
             <Button type="submit" className="w-full">{editData ? "Salvar" : "Criar conta"}</Button>
           </form>
