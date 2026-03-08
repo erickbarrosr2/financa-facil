@@ -108,11 +108,10 @@ export function TransactionDialog({ open, onOpenChange, editData }: TransactionD
           <div className="space-y-2">
             <Label>Valor (R$)</Label>
             <Input
-              type="number"
-              step="0.01"
-              min="0.01"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
+              type="text"
+              inputMode="numeric"
+              value={amountDisplay}
+              onChange={handleAmountChange}
               placeholder="0,00"
               required
               className="text-2xl font-bold h-14"
