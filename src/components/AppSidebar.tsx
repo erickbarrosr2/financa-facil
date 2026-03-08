@@ -36,7 +36,7 @@ export function AppSidebar() {
           <div className="w-8 h-8 rounded-xl bg-foreground flex items-center justify-center flex-shrink-0 overflow-hidden">
             <img src="/favicon.ico" alt="FinançaFácil" className="w-5 h-5 object-contain" />
           </div>
-          {!collapsed && <span className="font-bold text-foreground text-lg">FinançaFácil</span>}
+          {!collapsed && <span className="font-bold text-primary text-lg">FinançaFácil</span>}
         </div>
         <SidebarGroup>
           <SidebarGroupContent>
