@@ -32,8 +32,8 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
       <SidebarContent className="pt-4">
-        <div className={`px-4 mb-6 flex items-center gap-2 ${collapsed ? "justify-center" : ""}`}>
-          <img src="/logo.png" alt="FinançaFácil" className="w-9 h-9 flex-shrink-0 drop-shadow-sm" />
+        <div className={`px-4 mb-6 flex items-center gap-2 ${collapsed ? "justify-center px-0" : ""}`}>
+          <img src="/logo.png" alt="FinançaFácil" className={`flex-shrink-0 drop-shadow-sm ${collapsed ? "w-7 h-7" : "w-9 h-9"}`} />
           {!collapsed && <span className="font-bold text-primary text-lg">FinançaFácil</span>}
         </div>
         <SidebarGroup>
