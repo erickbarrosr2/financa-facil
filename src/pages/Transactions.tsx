@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useTransactions, useDeleteTransaction, useCategories, useAccounts } from "@/hooks/useFinanceData";
 import { TransactionDialog } from "@/components/TransactionDialog";
-import { Plus, Search, Pencil, Trash2, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { Plus, Search, Pencil, Trash2, ArrowUpRight, ArrowDownRight, X } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
@@ -88,6 +88,16 @@ export default function Transactions() {
           </SelectContent>
         </Select>
       </div>
+      {(search || (filterType && filterType !== "all") || (filterCategory && filterCategory !== "all") || (filterAccount && filterAccount !== "all")) && (
+        <Button
+          variant="ghost"
+          size="sm"
+          className="gap-1 text-muted-foreground"
+          onClick={() => { setSearch(""); setFilterType(""); setFilterCategory(""); setFilterAccount(""); }}
+        >
+          <X className="w-3.5 h-3.5" /> Limpar filtros
+        </Button>
+      )}
 
       {/* Transaction list */}
       <Card className="glass-card">
