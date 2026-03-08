@@ -146,7 +146,7 @@ export default function Accounts() {
             </div>
             <div className="space-y-2">
               <Label>Saldo inicial (R$)</Label>
-              <Input type="number" step="0.01" value={balance} onChange={(e) => setBalance(e.target.value)} />
+              <Input type="text" inputMode="numeric" value={balanceDisplay} onChange={handleBalanceChange} placeholder="0,00" />
             </div>
             <Button type="submit" className="w-full">{editData ? "Salvar" : "Criar conta"}</Button>
           </form>
