@@ -16,9 +16,11 @@ const CHART_COLORS = [
 
 export default function Dashboard() {
   const [txOpen, setTxOpen] = useState(false);
+  const { user } = useAuth();
   const now = new Date();
   const { data: transactions } = useTransactions({ month: now.getMonth(), year: now.getFullYear() });
   const { data: accounts } = useAccounts();
+  const userName = user?.user_metadata?.name || "Usuário";
 
   const income = transactions?.filter((t) => t.type === "income").reduce((s, t) => s + t.amount, 0) ?? 0;
   const expense = transactions?.filter((t) => t.type === "expense").reduce((s, t) => s + t.amount, 0) ?? 0;
