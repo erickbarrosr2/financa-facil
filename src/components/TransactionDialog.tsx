@@ -41,14 +41,17 @@ export function TransactionDialog({ open, onOpenChange, editData }: TransactionD
   useEffect(() => {
     if (editData) {
       setType(editData.type);
-      setAmount(String(editData.amount));
+      const cents = Math.round(editData.amount * 100);
+      setAmountRaw(cents);
+      setAmountDisplay(formatCurrency(cents));
       setCategoryId(editData.category_id || "");
       setAccountId(editData.account_id);
       setDate(editData.date);
       setDescription(editData.description || "");
     } else {
       setType("expense");
-      setAmount("");
+      setAmountRaw(0);
+      setAmountDisplay("");
       setCategoryId("");
       setAccountId(accounts?.[0]?.id || "");
       setDate(new Date().toISOString().split("T")[0]);
