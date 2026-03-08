@@ -47,9 +47,7 @@ export default function Auth() {
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <div className="w-full max-w-sm animate-slide-up">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-foreground mb-4 overflow-hidden">
-            <img src="/favicon.ico" alt="FinançaFácil" className="w-8 h-8 object-contain" />
-          </div>
+          <img src="/logo.png" alt="FinançaFácil" className="w-20 h-20 mx-auto mb-3 drop-shadow-md" />
           <h1 className="text-2xl font-bold text-primary">FinançaFácil</h1>
           <p className="text-muted-foreground text-sm mt-1">Controle financeiro simplificado</p>
         </div>
