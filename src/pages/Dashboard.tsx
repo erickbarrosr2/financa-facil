@@ -7,6 +7,7 @@ import { Plus, TrendingUp, TrendingDown, Wallet, ArrowUpRight, ArrowDownRight } 
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { useAuth } from "@/hooks/useAuth";
 
 const CHART_COLORS = [
   "hsl(160, 84%, 39%)", "hsl(200, 70%, 50%)", "hsl(280, 60%, 55%)",
