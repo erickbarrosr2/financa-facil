@@ -33,8 +33,8 @@ export function AppSidebar() {
     <Sidebar collapsible="icon">
       <SidebarContent className="pt-4">
         <div className={`px-4 mb-6 flex items-center gap-2 ${collapsed ? "justify-center" : ""}`}>
-          <div className="w-8 h-8 rounded-xl bg-primary flex items-center justify-center flex-shrink-0">
-            <Wallet className="w-4 h-4 text-primary-foreground" />
+          <div className="w-8 h-8 rounded-xl bg-primary flex items-center justify-center flex-shrink-0 overflow-hidden">
+            <img src="/favicon.ico" alt="FinançaFácil" className="w-5 h-5 object-contain" />
           </div>
           {!collapsed && <span className="font-bold text-foreground text-lg">FinançaFácil</span>}
         </div>
