@@ -20,23 +20,38 @@ export function TransactionDialog({ open, onOpenChange, editData }: TransactionD
   const updateTx = useUpdateTransaction();
 
   const [type, setType] = useState<"income" | "expense">("expense");
-  const [amount, setAmount] = useState("");
+  const [amountRaw, setAmountRaw] = useState(0); // value in cents
+  const [amountDisplay, setAmountDisplay] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [accountId, setAccountId] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [description, setDescription] = useState("");
 
+  const formatCurrency = (cents: number) => {
+    return (cents / 100).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
+
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value.replace(/\D/g, "");
+    const cents = parseInt(raw || "0", 10);
+    setAmountRaw(cents);
+    setAmountDisplay(formatCurrency(cents));
+  };
+
   useEffect(() => {
     if (editData) {
       setType(editData.type);
-      setAmount(String(editData.amount));
+      const cents = Math.round(editData.amount * 100);
+      setAmountRaw(cents);
+      setAmountDisplay(formatCurrency(cents));
       setCategoryId(editData.category_id || "");
       setAccountId(editData.account_id);
       setDate(editData.date);
       setDescription(editData.description || "");
     } else {
       setType("expense");
-      setAmount("");
+      setAmountRaw(0);
+      setAmountDisplay("");
       setCategoryId("");
       setAccountId(accounts?.[0]?.id || "");
       setDate(new Date().toISOString().split("T")[0]);
@@ -50,7 +65,7 @@ export function TransactionDialog({ open, onOpenChange, editData }: TransactionD
     e.preventDefault();
     const data = {
       type,
-      amount: parseFloat(amount),
+      amount: amountRaw / 100,
       category_id: categoryId || null,
       account_id: accountId,
       date,
@@ -93,11 +108,10 @@ export function TransactionDialog({ open, onOpenChange, editData }: TransactionD
           <div className="space-y-2">
             <Label>Valor (R$)</Label>
             <Input
-              type="number"
-              step="0.01"
-              min="0.01"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
+              type="text"
+              inputMode="numeric"
+              value={amountDisplay}
+              onChange={handleAmountChange}
               placeholder="0,00"
               required
               className="text-2xl font-bold h-14"
