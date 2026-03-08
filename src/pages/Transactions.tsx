@@ -88,6 +88,16 @@ export default function Transactions() {
           </SelectContent>
         </Select>
       </div>
+      {(search || (filterType && filterType !== "all") || (filterCategory && filterCategory !== "all") || (filterAccount && filterAccount !== "all")) && (
+        <Button
+          variant="ghost"
+          size="sm"
+          className="gap-1 text-muted-foreground"
+          onClick={() => { setSearch(""); setFilterType(""); setFilterCategory(""); setFilterAccount(""); }}
+        >
+          <X className="w-3.5 h-3.5" /> Limpar filtros
+        </Button>
+      )}
 
       {/* Transaction list */}
       <Card className="glass-card">
