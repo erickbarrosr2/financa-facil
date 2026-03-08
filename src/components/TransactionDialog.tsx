@@ -20,11 +20,23 @@ export function TransactionDialog({ open, onOpenChange, editData }: TransactionD
   const updateTx = useUpdateTransaction();
 
   const [type, setType] = useState<"income" | "expense">("expense");
-  const [amount, setAmount] = useState("");
+  const [amountRaw, setAmountRaw] = useState(0); // value in cents
+  const [amountDisplay, setAmountDisplay] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [accountId, setAccountId] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [description, setDescription] = useState("");
+
+  const formatCurrency = (cents: number) => {
+    return (cents / 100).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
+
+  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const raw = e.target.value.replace(/\D/g, "");
+    const cents = parseInt(raw || "0", 10);
+    setAmountRaw(cents);
+    setAmountDisplay(formatCurrency(cents));
+  };
 
   useEffect(() => {
     if (editData) {
