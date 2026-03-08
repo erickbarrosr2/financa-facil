@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { ArrowRight, Mail, Lock, User } from "lucide-react";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 type AuthMode = "login" | "signup" | "forgot";
 
