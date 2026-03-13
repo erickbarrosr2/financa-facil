@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useTransactions, useAccounts } from "@/hooks/useFinanceData";
+import { Badge } from "@/components/ui/badge";
+import { useTransactions, useAccounts, useTodayTransactions, useTogglePaid } from "@/hooks/useFinanceData";
 import { TransactionDialog } from "@/components/TransactionDialog";
 import {
   Plus,
@@ -10,12 +11,15 @@ import {
   Wallet,
   ArrowUpRight,
   ArrowDownRight,
+  CalendarClock,
+  ChevronRight,
 } from "lucide-react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
 
 const CHART_COLORS = [
   "hsl(160, 84%, 39%)",
@@ -29,6 +33,7 @@ const CHART_COLORS = [
 export default function Dashboard() {
   const [txOpen, setTxOpen] = useState(false);
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [userName, setUserName] = useState<string>(
     user?.user_metadata?.name ?? "Usuário",
   );
@@ -60,12 +65,14 @@ export default function Dashboard() {
       mounted = false;
     };
   }, [user]);
+
   const now = new Date();
   const { data: transactions } = useTransactions({
     month: now.getMonth(),
     year: now.getFullYear(),
   });
   const { data: accounts } = useAccounts();
+  const { data: todayTxs } = useTodayTransactions();
 
   const income =
     transactions
@@ -107,6 +114,9 @@ export default function Dashboard() {
   const formatCurrency = (v: number) =>
     v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
+  const todayTotal = todayTxs?.reduce((s, t) => s + t.amount, 0) ?? 0;
+  const todayExpenseUnpaid = todayTxs?.filter((t) => t.type === "expense" && !(t as any).is_paid).length ?? 0;
+
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="flex items-center justify-between">
@@ -122,6 +132,43 @@ export default function Dashboard() {
           <Plus className="w-4 h-4" /> Nova transação
         </Button>
       </div>
+
+      {/* Today's transactions card */}
+      {todayTxs && todayTxs.length > 0 && (
+        <Card className="border-primary/30 bg-primary/5 dark:bg-primary/10">
+          <CardContent className="pt-5 pb-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center">
+                  <CalendarClock className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-foreground">
+                    {todayTxs.length} transaç{todayTxs.length === 1 ? "ão" : "ões"} hoje
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Total: {formatCurrency(todayTotal)}
+                    {todayExpenseUnpaid > 0 && (
+                      <span className="ml-2 text-destructive font-medium">
+                        · {todayExpenseUnpaid} despesa{todayExpenseUnpaid > 1 ? "s" : ""} não paga{todayExpenseUnpaid > 1 ? "s" : ""}
+                      </span>
+                    )}
+                  </p>
+                </div>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="gap-1 text-primary hover:text-primary"
+                onClick={() => navigate("/transactions?today=1")}
+                aria-label="Ver transações de hoje"
+              >
+                Ver <ChevronRight className="w-4 h-4" />
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card className="glass-card">
