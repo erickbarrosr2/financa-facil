@@ -84,6 +84,36 @@ export function useUpdateTransaction() {
   });
 }
 
+export function useTogglePaid() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, is_paid }: { id: string; is_paid: boolean }) => {
+      const { error } = await supabase.from("transactions").update({ is_paid } as any).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["transactions"] }); },
+    onError: (e) => toast.error(e.message),
+  });
+}
+
+export function useTodayTransactions() {
+  const { user } = useAuth();
+  const today = new Date().toISOString().split("T")[0];
+  return useQuery({
+    queryKey: ["transactions-today", user?.id, today],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("transactions")
+        .select("*, categories(name, icon), accounts(name)")
+        .eq("date", today)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user,
+  });
+}
+
 export function useDeleteTransaction() {
   const qc = useQueryClient();
   return useMutation({
