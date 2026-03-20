@@ -142,6 +142,7 @@ export default function Transactions() {
             const isToday = tx.date === todayStr;
             const isPaid = (tx as any).is_paid === true;
             const isExpense = tx.type === "expense";
+            const isIncome = tx.type === "income";
 
             return (
               <div
