@@ -142,6 +142,7 @@ export default function Transactions() {
             const isToday = tx.date === todayStr;
             const isPaid = (tx as any).is_paid === true;
             const isExpense = tx.type === "expense";
+            const isIncome = tx.type === "income";
 
             return (
               <div
@@ -149,32 +150,38 @@ export default function Transactions() {
                 className={`flex items-center justify-between p-4 border-b border-border/30 last:border-0 hover:bg-muted/30 transition-colors ${showToday && isToday ? "bg-primary/5 dark:bg-primary/10" : ""}`}
               >
                 <div className="flex items-center gap-3 min-w-0 flex-1">
-                  {/* Payment checkbox for expenses */}
-                  {isExpense && (
-                    <Checkbox
-                      checked={isPaid}
-                      onCheckedChange={() => handleTogglePaid(tx.id, isPaid)}
-                      aria-label={isPaid ? "Marcar como não paga" : "Marcar como paga"}
-                      className="w-5 h-5 flex-shrink-0"
-                    />
-                  )}
-                  <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${tx.type === "income" ? "bg-income-light" : "bg-expense-light"}`}>
-                    {tx.type === "income" ? <ArrowUpRight className="w-4 h-4 text-income" /> : <ArrowDownRight className="w-4 h-4 text-expense" />}
+                  {/* Payment checkbox */}
+                  <Checkbox
+                    checked={isPaid}
+                    onCheckedChange={() => handleTogglePaid(tx.id, isPaid)}
+                    aria-label={
+                      isExpense
+                        ? (isPaid ? "Marcar como não paga" : "Marcar como paga")
+                        : (isPaid ? "Marcar como não recebido" : "Marcar como recebido")
+                    }
+                    className="w-5 h-5 flex-shrink-0"
+                  />
+                  <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${isIncome ? "bg-income-light" : "bg-expense-light"}`}>
+                    {isIncome ? <ArrowUpRight className="w-4 h-4 text-income" /> : <ArrowDownRight className="w-4 h-4 text-expense" />}
                   </div>
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
                       <p className="text-sm font-medium text-foreground truncate">
                         {tx.description || (tx.categories as any)?.name || "Transação"}
                       </p>
-                      {isExpense && (
-                        <Badge
-                          variant={isPaid ? "default" : "destructive"}
-                          className={`text-[10px] px-1.5 py-0 leading-4 flex-shrink-0 ${isPaid ? "bg-income/15 text-income hover:bg-income/20 border-0" : ""}`}
-                          aria-label={isPaid ? "Status: Paga" : "Status: Não paga"}
-                        >
-                          {isPaid ? "Paga" : "Não paga"}
-                        </Badge>
-                      )}
+                      <Badge
+                        variant={isPaid ? "default" : "destructive"}
+                        className={`text-[10px] px-1.5 py-0 leading-4 flex-shrink-0 ${isPaid ? "bg-income/15 text-income hover:bg-income/20 border-0" : ""}`}
+                        aria-label={
+                          isExpense
+                            ? (isPaid ? "Status: Paga" : "Status: Não paga")
+                            : (isPaid ? "Status: Recebido" : "Status: Não recebido")
+                        }
+                      >
+                        {isExpense
+                          ? (isPaid ? "Paga" : "Não paga")
+                          : (isPaid ? "Recebido" : "Não recebido")}
+                      </Badge>
                     </div>
                     <p className="text-xs text-muted-foreground">
                       {(tx.categories as any)?.name} · {(tx.accounts as any)?.name} · {format(new Date(tx.date + "T12:00:00"), "dd/MM", { locale: ptBR })}
