@@ -1,6 +1,8 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, useCallback, ReactNode } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { useInactivityLogout, clearActivityTimestamp } from "./useInactivityLogout";
+import { toast } from "sonner";
 
 interface AuthContextType {
   user: User | null;
@@ -18,6 +20,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const signOut = useCallback(async () => {
+    clearActivityTimestamp();
+    await supabase.auth.signOut();
+  }, []);
+
+  // Auto-logout after 1 hour of inactivity
+  const handleInactivityLogout = useCallback(async () => {
+    toast.info("Sessão expirada por inatividade. Faça login novamente.");
+    await signOut();
+  }, [signOut]);
+
+  useInactivityLogout(handleInactivityLogout, !!user);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -50,10 +65,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signIn = async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     return { error };
-  };
-
-  const signOut = async () => {
-    await supabase.auth.signOut();
   };
 
   const resetPassword = async (email: string) => {
